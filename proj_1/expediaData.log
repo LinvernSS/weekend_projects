@@ -1,6 +1,17 @@
-INFO:root:file loaded.
-INFO:root:Calls Offered : 16,915
-INFO:root:Abandon after 30s : 2.32%
-INFO:root:FCR : 86.5%
-INFO:root:DSAT : 14.2%
-INFO:root:CSAT : 78.3%
+INFO:root:File loaded.
+INFO:root:Calls Offered : 22,343
+INFO:root:Abandon after 30s : 3.05%
+INFO:root:FCR : 86.0%
+INFO:root:DSAT : 18.0%
+INFO:root:CSAT : 74.4%
+INFO:root:Base Size : 508
+INFO:root:Number of Promoters : 279, Good
+INFO:root:Percentage of Promoters : 54.9%
+INFO:root:Number of Passives : 21, Bad
+INFO:root:Percentage of Passives : 17.1%
+INFO:root:Number of Dectractors : 33, Good
+INFO:root:Percentage of Dectractors : 26.8%
+INFO:root:Overall NPS % : 28.74%
+INFO:root:Sat with Agent % : 74.4%
+INFO:root:DSat with Agent % : 18.0%
+INFO:root:Data retrieval completed.
