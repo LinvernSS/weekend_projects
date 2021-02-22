@@ -50,7 +50,7 @@ def get_data(date, book):
     if row_num is not None:
         get_worksheet0_data(row_num, worksheets[0])
 
-        for cell in worksheets[1]['B1':'X1'][0]:  # retrieves column index of requested data
+        for cell in worksheets[1]['B1':'Y1'][0]:  # retrieves column index of requested data
             val = trunc_date(cell.value)
             if date == val:
                 col_name = cell.coordinate[0]
@@ -90,12 +90,12 @@ def get_worksheet1_data(col_n, ws):
         row = str(cell[0].row)
         temp_row_name = ws['A' + row].value  # row label
 
-        # checks if first or second part of promoter scores
+        # checks if first or second part of scores
         if temp_row_name is not None:
             row_name = temp_row_name
             row_name = row_name.split()
 
-            # checks if is actual promoter score or base size
+            # checks if is actual score or base size
             if len(row_name) > 2:
                 row_name = row_name[0]
                 if row_name == 'Promoters':
@@ -107,7 +107,7 @@ def get_worksheet1_data(col_n, ws):
                 logging.info('Number of {} : {}, {}'.format(row_name, val, score))
 
             else:
-                row_name = row_name[0] + ' ' + row_name[1]
+                row_name = ' '.join(row_name)
                 logging.info('{} : {}'.format(row_name, val))
         else:
             val = str(round(val * 100, 2)) + '%'
