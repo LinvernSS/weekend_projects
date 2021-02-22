@@ -1,6 +1,10 @@
 ERROR:root:File expedia_report_monthly_june_2017.xlsx not found.
 INFO:root:Data retrieval failed.
 
+INFO:root:File expedia_report_monthly_june_2018.xlsx loaded.
+ERROR:root:Requested date not found.
+INFO:root:Data retrieval failed.
+
 INFO:root:File expedia_report_monthly_january_2018.xlsx loaded.
 INFO:root:Calls Offered : 16,915
 INFO:root:Abandon after 30s : 2.32%
@@ -54,8 +58,4 @@ INFO:root:Overall NPS % : 31.3%
 INFO:root:Sat with Agent % : 75.1%
 INFO:root:DSat with Agent % : 15.7%
 INFO:root:Data retrieval completed.
-
-INFO:root:File expedia_report_monthly_june_2018.xlsx loaded.
-ERROR:root:Requested date not found.
-INFO:root:Data retrieval failed.
 
