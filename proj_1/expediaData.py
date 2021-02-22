@@ -80,6 +80,10 @@ def get_worksheet0_data(row_n, ws):
 
 
 def get_worksheet1_data(col_n, ws):
+    promoters_score = lambda v: 'Good' if v >= 200 else 'Bad'
+    passives_score = lambda v: 'Good' if v >= 100 else 'Bad'
+    detractors_score = lambda v: 'Good' if v < 100 else 'Bad'
+
     # retrieves first section of data
     for cell in ws[col_n + '3':col_n + '9']:
         val = cell[0].value
@@ -95,21 +99,13 @@ def get_worksheet1_data(col_n, ws):
             if len(row_name) > 2:
                 row_name = row_name[0]
                 if row_name == 'Promoters':
-                    if val >= 200:
-                        score = 'Good'
-                    else:
-                        score = 'Bad'
+                    score = promoters_score(val)
                 elif row_name == 'Passives':
-                    if val >= 100:
-                        score = 'Good'
-                    else:
-                        score = 'Bad'
+                    score = passives_score(val)
                 else:
-                    if val < 100:
-                        score = 'Good'
-                    else:
-                        score = 'Bad'
+                    score = detractors_score(val)
                 logging.info('Number of {} : {}, {}'.format(row_name, val, score))
+
             else:
                 row_name = row_name[0] + ' ' + row_name[1]
                 logging.info('{} : {}'.format(row_name, val))
