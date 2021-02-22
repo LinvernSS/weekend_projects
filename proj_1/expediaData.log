@@ -1,4 +1,25 @@
-INFO:root:File loaded.
+ERROR:root:File expedia_report_monthly_june_2017.xlsx not found.
+INFO:root:Data retrieval failed.
+
+INFO:root:File expedia_report_monthly_january_2018.xlsx loaded.
+INFO:root:Calls Offered : 16,915
+INFO:root:Abandon after 30s : 2.32%
+INFO:root:FCR : 86.5%
+INFO:root:DSAT : 14.2%
+INFO:root:CSAT : 78.3%
+INFO:root:Base Size : 289
+INFO:root:Number of Promoters : 172, Bad
+INFO:root:Percentage of Promoters : 58.7%
+INFO:root:Number of Passives : 54, Bad
+INFO:root:Percentage of Passives : 18.4%
+INFO:root:Number of Dectractors : 67, Good
+INFO:root:Percentage of Dectractors : 22.9%
+INFO:root:Overall NPS % : 35.84%
+INFO:root:Sat with Agent % : 80.5%
+INFO:root:DSat with Agent % : 11.3%
+INFO:root:Data retrieval completed.
+
+INFO:root:File expedia_report_monthly_march_2018.xlsx loaded.
 INFO:root:Calls Offered : 22,343
 INFO:root:Abandon after 30s : 3.05%
 INFO:root:FCR : 86.0%
@@ -15,3 +36,26 @@ INFO:root:Overall NPS % : 28.74%
 INFO:root:Sat with Agent % : 74.4%
 INFO:root:DSat with Agent % : 18.0%
 INFO:root:Data retrieval completed.
+
+INFO:root:File expedia_report_monthly_march_2017.xlsx loaded.
+INFO:root:Calls Offered : 25,902
+INFO:root:Abandon after 30s : 5.94%
+INFO:root:FCR : 82.6%
+INFO:root:DSAT : 15.7%
+INFO:root:CSAT : 75.1%
+INFO:root:Base Size : 539
+INFO:root:Number of Promoters : 305, Good
+INFO:root:Percentage of Promoters : 56.6%
+INFO:root:Number of Passives : 98, Bad
+INFO:root:Percentage of Passives : 18.2%
+INFO:root:Number of Dectractors : 136, Bad
+INFO:root:Percentage of Dectractors : 25.2%
+INFO:root:Overall NPS % : 31.3%
+INFO:root:Sat with Agent % : 75.1%
+INFO:root:DSat with Agent % : 15.7%
+INFO:root:Data retrieval completed.
+
+INFO:root:File expedia_report_monthly_june_2018.xlsx loaded.
+ERROR:root:Requested date not found.
+INFO:root:Data retrieval failed.
+
