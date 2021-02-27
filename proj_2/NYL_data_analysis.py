@@ -4,7 +4,8 @@ import os
 import phonenumbers as pn
 import re
 import smtplib
-import email
+import matplotlib.pyplot as plt
+import imghdr
 from email.message import EmailMessage
 import logging
 
@@ -117,24 +118,80 @@ def find_valid_email(d):
         for name in d[invalid_emails]['Agent Id']:
             logging.warning('Agent {} has an invalid email.'.format(name))
     else:
-        logging.info('All emails validated.')
+        logging.info('All emails validated.\n')
 
 
 def data_summary(d):
     trans_d = d.T
+    logging.info('Transposed Data:\n')
     logging.info(trans_d)
+    logging.info('\n')
+
     state_group = d.sort_values('Agency State')
+    logging.info('Data grouped by state:\n')
     logging.info(state_group)
+    logging.info('\n')
+
+    state_counts = state_group.groupby('Agency State')['Agent Id'].count().sort_values()
+    plt.plot(state_counts.index, state_counts, '.r')
+    plt.xticks(np.arange(0, 50, 3))
+    plt.xlabel('State')
+    plt.ylabel('Count')
+    plt.title('Occurence of Agency States')
+    plt.savefig('graphs/State_counts.png')
+
     format_middle_names = lambda n: n if (n == '') else (n + ' ')
     first_names = d['Agent First Name'].str.strip().str.title() + ' '
     middle_names = pd.Series(map(format_middle_names, d['Agent Middle Name'].str.strip().str.title()))
     last_names = d['Agent Last Name'].str.strip().str.title()
     names = first_names + middle_names + last_names
-    agent_info = pd.concat([names, d[['Agent Writing Contract Start Date', 'Date when an agent became A2O']]], axis=1)
+
+    c1 = 'Agent Writing Contract Start Date'
+    c2 = 'Date when an agent became A2O'
+    agent_info = pd.concat([names, d[[c1, c2]]], axis=1)
+    logging.info('Agent Start and A2O Date Info:\n')
     logging.info(agent_info)
+    logging.info('\n')
+    agent_info[c1] = pd.to_datetime(agent_info[c1], 'coerce')
+    agent_info[c2] = pd.to_datetime(agent_info[c2], 'coerce')
+
+    agent_info = agent_info.sort_values(c2)
+    fig, ax1 = plt.subplots()
+    color = 'tab:red'
+    ax1.set_ylabel('A2O Date', color=color)
+    ax1.plot(agent_info[0], agent_info[c2], '.r')
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax2 = ax1.twinx()
+    color = 'tab:blue'
+    ax2.set_ylabel('Start Date', color=color)
+    ax2.plot(agent_info[0], agent_info[c1], '.b')
+    ax2.tick_params(axis='y', labelcolor=color)
+    plt.xticks([])
+    fig.tight_layout()
+    plt.savefig('graphs/Agent_info_by_A2O.png')
+
+    agent_info = agent_info.sort_values(c1)
+    fig, ax1 = plt.subplots()
+    color = 'tab:red'
+    ax1.set_ylabel('A2O Date', color=color)
+    ax1.plot(agent_info[0], agent_info[c2], '.r')
+    ax1.tick_params(axis='y', labelcolor=color)
+    ax2 = ax1.twinx()
+    color = 'tab:blue'
+    ax2.set_ylabel('Start Date', color=color)
+    ax2.plot(agent_info[0], agent_info[c1], '.b')
+    ax2.tick_params(axis='y', labelcolor=color)
+    plt.xticks([])
+    fig.tight_layout()
+    plt.savefig('graphs/Agent_info_by_start.png')
 
 
 def send_email(cond):
+    if cond:
+        logging.info('Program executed successfully')
+    else:
+        logging.info('Program failed execution')
+
     with open('NYLData.log') as fp:
         msg = EmailMessage()
         msg.set_content(fp.read())
@@ -147,6 +204,13 @@ def send_email(cond):
     msg['Subject'] = 'Results of NYL data analysis'
     msg['From'] = username
     msg['To'] = username
+    if cond:
+        path = 'graphs/'
+        imgs = ['Agent_info_by_A2O.png', 'Agent_info_by_start.png', 'State_counts.png']
+        for img_name in imgs:
+            with open(path+img_name, 'rb') as fp:
+                img = fp.read()
+            msg.add_attachment(img, maintype='image', subtype=imghdr.what(None, img))
 
     s = smtplib.SMTP(smtp_server)
     s.starttls()
@@ -161,12 +225,14 @@ def send_email(cond):
 
 if __name__ == "__main__":
     logging.basicConfig(filename='NYLData.log', filemode='w', level=logging.DEBUG)
+    mpl_logger = logging.getLogger('matplotlib')
+    mpl_logger.setLevel(logging.WARNING)
     file_path = 'data/'
 
     file_names = np.array(os.listdir(file_path))
     recent_file = find_recent_file(file_names)
 
-    #log_process(recent_file)
+    # log_process(recent_file)
 
     prev_file_names = np.delete(file_names, np.where(file_names == recent_file))
     prev_file = find_recent_file(prev_file_names)
@@ -174,9 +240,18 @@ if __name__ == "__main__":
     data = validate_file_len(recent_file, prev_file, file_path)
     data = replace_headers(data)
 
-    find_valid_pn(data)
-    find_valid_state(data)
-    find_valid_email(data)
+    try:
+        find_valid_pn(data)
+        find_valid_state(data)
+        find_valid_email(data)
+    except:
+        logging.error('Data validation failed.')
+        send_email(False)
 
-    data_summary(data)
-    send_email(True)
+    try:
+        data_summary(data)
+    except:
+        logging.error('Data summarization failed.')
+        send_email(False)
+    else:
+        send_email(True)

@@ -2,6 +2,9 @@ INFO:root:Successfully loaded NYL_FieldAgent_20210219.csv.
 INFO:root:All phone numbers validated.
 INFO:root:All states validated.
 INFO:root:All emails validated.
+
+INFO:root:Transposed Data:
+
 INFO:root:                                                                                0     ...                                               2105
 Partner                                                                          NYL  ...                                                NYL
 Agent Id                                                                         866  ...                                             991861
@@ -33,6 +36,10 @@ Title                                                                         AG
 AARP Auth to Offer Level                                                           2  ...                                                  2
 
 [28 rows x 2106 columns]
+INFO:root:
+
+INFO:root:Data grouped by state:
+
 INFO:root:     Partner  Agent Id  ...   Title AARP Auth to Offer Level
 952      NYL    153804  ...  AGENT                         2
 708      NYL    129380  ...  AGENT                         2
@@ -47,6 +54,10 @@ INFO:root:     Partner  Agent Id  ...   Title AARP Auth to Offer Level
 1678     NYL    193739  ...  AGENT                         2
 
 [2106 rows x 28 columns]
+INFO:root:
+
+INFO:root:Agent Start and A2O Date Info:
+
 INFO:root:                        0  ... Date when an agent became A2O
 0            Steve Morgan  ...                    12/02/2020
 1         Anthony Benitez  ...                    10/07/2020
@@ -61,3 +72,5 @@ INFO:root:                        0  ... Date when an agent became A2O
 2105       Jeffrey E Thol  ...                    10/05/2020
 
 [2106 rows x 3 columns]
+INFO:root:
+
