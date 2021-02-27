@@ -1,0 +1,41 @@
+Problem Statement :
+
+1.Use python libraries logging,csv (or) openpyxl,phonenumbers,numpy,pandas,datetime,sys
+
+2.So we have FieldAgent files for NewYork Life Insurances.
+
+3.Basically you need to sort the files in descending order of dates and obtain the greatest dated file which is in the filenaming convention 20210219 here in the collection provided.
+
+4.Now before reading the file capture the name of the file in NYL.lst file so the filename is stored there for future reference.
+
+5.Check the file line count and measure that the file line count of the latest file and the file line count of one level less decrement date file has a variance of 500 lines.
+
+6. If the line count difference is more than 500 lines reject the processing of the file with exception message else process the latest file.
+
+7.File if processed once should be stored in the refernece file : NYL.lst .If incase we are reprocessing the same file once again should throw an exception , saying already processed.
+
+8.Now comes the file processing effort.
+
+i) Replace the headers in the file c1 with c2 and c3 with c4 , just incase the file header is inconsistent:
+
+      c1='Agent Writing Contract Start Date (Carrier appointment start date)'
+      c2='Agent Writing Contract Start Date'
+      c3='Agent Writing Contract Status (actually active and cancelled\'s should come in two different files)'
+      c4='Agent Writing Contract Status'
+
+ii) The phonenumbers in the file should be US valid phone numbers incase they not Valid capture in the log file.
+
+iii) Check if the State is a Valid US State
+
+
+iv) Check is the Agent email is a valid email id
+
+9. Create a data frame of the headers as index and data as rows.Display the data frame.
+
+10.Create another dataframe with which groups all the agents by Agency State.Display in the data frame.
+
+11.Create a dataframe which gives the Agent Name , Agent Writing ContractStart Date , Date when an agent became A2O.
+
+12.Create a data visualization with the dataframe using 9,10 use pandas built-in plot function for histogram.
+
+13.Send an email of the logger file as attachment to yourself once the file is processed.

@@ -1,0 +1,63 @@
+INFO:root:Successfully loaded NYL_FieldAgent_20210219.csv.
+INFO:root:All phone numbers validated.
+INFO:root:All states validated.
+INFO:root:All emails validated.
+INFO:root:                                                                                0     ...                                               2105
+Partner                                                                          NYL  ...                                                NYL
+Agent Id                                                                         866  ...                                             991861
+Update Date                                                               02/18/2021  ...                                         02/18/2021
+Agency Name                                                   NORTHERN CALIFORNIA GO  ...                              NORTHEASTERN PENN. GO
+Agency Phone Number                                                     916.774.6200  ...                                       570.969.3111
+Agency Street Address                                2999 DOUGLAS BLVD.               ...                    220 PENN AVENUE                
+Agency Street Address 2            SUITE 350                                     ...  ...                                                ...
+Agency City                                          ROSEVILLE                        ...                    SCRANTON                       
+Agency State                                                                      CA  ...                                                 PA
+Agency Postal Code                                                         956613839  ...                                              18503
+Agency Principal Name                                                                 ...                                                   
+Agent Last Name                                      MORGAN                           ...                    THOL                           
+Agent Middle Name                                                                     ...                    E                              
+Agent First Name                                     STEVE                            ...                    JEFFREY                        
+Agent Street Address                                 2999 DOUGLAS BLVD                ...                    928 CHURCH STREET              
+Agent Street Address 2             SUITE 350                                     ...  ...                                                ...
+Agent City                                           ROSEVILLE                        ...                    HONESDALE                      
+Agent State                                                                       CA  ...                                                 PA
+Agent Postal Code                                                          956613839  ...                                          184311921
+Agent Phone Number                                                      916.774.6236  ...                                       570.253.5148
+Agent Email Address                                   stevemorgan@ft.NewYorkLife.com  ...                           jthol@ft.newyorklife.com
+Agent National Producer Number                                               2065325  ...                                            1019288
+Agent Writing Contract Start Date                                         06/10/1998  ...                                         05/04/1970
+Agent Writing Contract Status                                                 Active  ...                                             Active
+Agent License State (active)                                                  CA,FL,  ...            AZ,CA,FL,MA,NC,NJ,NY,PA,TX,UT,CT,NV,VA,
+Date when an agent became A2O                                             12/02/2020  ...                                         10/05/2020
+Title                                                                         AGENT   ...                                             AGENT 
+AARP Auth to Offer Level                                                           2  ...                                                  2
+
+[28 rows x 2106 columns]
+INFO:root:     Partner  Agent Id  ...   Title AARP Auth to Offer Level
+952      NYL    153804  ...  AGENT                         2
+708      NYL    129380  ...  AGENT                         2
+734      NYL    132079  ...  AGENT                         2
+269      NYL     72396  ...  AGENT                         2
+1137     NYL    166621  ...  AGENT                         2
+...      ...       ...  ...     ...                      ...
+998      NYL    157183  ...  AGENT                         2
+2053     NYL    750499  ...  AGENT                         2
+2        NYL      1257  ...  AGENT                         2
+65       NYL     28017  ...  AGENT                         2
+1678     NYL    193739  ...  AGENT                         2
+
+[2106 rows x 28 columns]
+INFO:root:                        0  ... Date when an agent became A2O
+0            Steve Morgan  ...                    12/02/2020
+1         Anthony Benitez  ...                    10/07/2020
+2         Dan Christensen  ...                    12/29/2020
+3            James Kramer  ...                    10/02/2020
+4     Phillip R Whitehead  ...                    12/02/2020
+...                   ...  ...                           ...
+2101         Jay P Miller  ...                    10/15/2020
+2102        Otto A Kuehne  ...                    12/02/2020
+2103       Charles W Boso  ...                    01/22/2021
+2104         Len A Fuller  ...                    01/04/2021
+2105       Jeffrey E Thol  ...                    10/05/2020
+
+[2106 rows x 3 columns]
