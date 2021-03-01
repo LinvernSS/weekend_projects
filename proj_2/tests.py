@@ -4,16 +4,10 @@ import pandas as pd
 from pandas.testing import assert_frame_equal
 from pandas.testing import assert_index_equal
 import logging
-import os
 import numpy as np
 
 d1 = pd.read_csv('test_data/regular.csv')
 d2 = pd.read_csv('test_data/bad.csv')
-
-l1 = np.array(os.listdir('data/'))
-f1 = nda.find_recent_file(l1)
-l2 = np.delete(l1, np.where(l1 == f1))
-f2 = nda.find_recent_file(l2)
 
 
 class MyTestCase(unittest.TestCase):
@@ -21,8 +15,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(nda.find_recent_file(''), False)
         self.assertEqual(nda.find_recent_file(np.array(['.csv', '.csv'])), False)
         self.assertEqual(nda.find_recent_file(np.array(['0.csv', '1.csv'])), '1.csv')
-        self.assertEqual(nda.find_recent_file(l1), f1)
-        self.assertEqual(nda.find_recent_file(l2), f2)
+        self.assertEqual(nda.find_recent_file(np.array(['a_b_c_0.csv', 'x_y_z_1.csv'])), 'x_y_z_1.csv')
 
     def test_load(self):
         self.assertEqual(nda.load_data('fake file'), False)
@@ -37,8 +30,8 @@ class MyTestCase(unittest.TestCase):
         assert_index_equal(nda.replace_headers(d2).columns, d1.columns)
 
     def test_invalid_pn(self):
-        self.assertEqual(nda.is_invalid_pn(''), True)
-        self.assertEqual(nda.is_invalid_pn(' '), True)
+        self.assertEqual(nda.is_invalid_pn(''), False)
+        self.assertEqual(nda.is_invalid_pn(' '), False)
         self.assertEqual(nda.is_invalid_pn('pho.num.bers'), True)
         self.assertEqual(nda.is_invalid_pn('654.2181'), True)
         self.assertEqual(nda.is_invalid_pn('804,984,4561'), True)
@@ -51,7 +44,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(nda.find_valid_pn(d2), False)
 
     def test_states(self):
-        self.assertEqual(nda.find_valid_state(d1), True)
+        self.assertEqual(nda.find_valid_state(d1), False)
         self.assertEqual(nda.find_valid_state(d2), False)
 
     def test_email(self):

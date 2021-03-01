@@ -9,6 +9,12 @@ import phonenumbers as pn  # phone number validation
 import matplotlib.pyplot as plt
 from email.message import EmailMessage
 
+states_abbr = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
+               'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
+               'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
+               'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
+               'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
+
 
 # Given a list of filenames, returns file with most recent date
 # Assumed all files in list are same format
@@ -96,6 +102,9 @@ def format_data(d):
 
 # Returns true if given US phone number is valid, else false
 def is_invalid_pn(num):
+    # ignore blank phone numbers
+    if num.strip() == '':
+        return False
     num = '+1' + num  # assumes all phone numbers are from the USA
     try:
         num = pn.parse(num)
@@ -110,8 +119,10 @@ def is_invalid_pn(num):
 
 # Validates all phone numbers in given dataframe, logs invalid phone numbers
 def find_valid_pn(d):
+    invalid_agency_nums = d['Agency Phone Number'].apply(is_invalid_pn)
+    invalid_agent_nums = d['Agent Phone Number'].apply(is_invalid_pn)
     # boolean mask which is true wherever there is an invalid phone number
-    invalid_nums = d['Agency Phone Number'].apply(is_invalid_pn)
+    invalid_nums = invalid_agency_nums | invalid_agent_nums
 
     if invalid_nums.sum() > 0:  # if there are any invalid phone numbers, log that agent's id
         for agent_id in d[invalid_nums]['Agent Id']:
@@ -122,19 +133,23 @@ def find_valid_pn(d):
         return True
 
 
+# Finds if there are invalid states in list
+def invalid_list_states(s):
+    for st in s[:-1].split(','):
+        if st not in states_abbr:
+            return True
+    return False
+
+
 # Validates all agency states in given dataframe, logs invalid states
 def find_valid_state(d):
-    states_abbr = ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
-                   'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
-                   'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
-                   'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
-                   'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-
     # boolean masks which are true wherever there is an invalid state
     invalid_agency_states = d['Agency State'].apply(lambda s: False if s in states_abbr else True)
     invalid_agent_states = d['Agent State'].apply(lambda s: False if s in states_abbr else True)
-    # if either agency or agent states are invalid, there is an invalid state
-    invalid_states = invalid_agent_states | invalid_agency_states
+    invalid_license_states = d['Agent License State (active)'].fillna('').apply(invalid_list_states)
+
+    # if any are invalid, there is an invalid state
+    invalid_states = invalid_agent_states | invalid_agency_states | invalid_license_states
 
     if invalid_states.sum() > 0:  # if there are any invalid states, log that agent's id
         for agent_id in d[invalid_states]['Agent Id']:
@@ -289,7 +304,7 @@ def send_email(success):
     s = smtplib.SMTP(smtp_server)
     s.starttls()
     s.login(username, password)
-    s.send_message(msg)
+    # s.send_message(msg)
     s.quit()
 
     exit(0) if success else exit(-1)
@@ -320,7 +335,7 @@ if __name__ == "__main__":
     file_names = np.array(os.listdir('data/'))
 
     recent_file = escape(find_recent_file(file_names))
-    escape(log_process(recent_file))
+    # escape(log_process(recent_file))
 
     data = escape(load_data(recent_file))
 

@@ -1,12 +1,13 @@
-2021-03-01 15:21:17 INFO Created NYL.lst and logged NYL_FieldAgent_20210219.csv as processed.
-2021-03-01 15:21:17 INFO Successfully loaded NYL_FieldAgent_20210219.csv.
-2021-03-01 15:21:17 INFO Successfully loaded NYL_FieldAgent_20210212.csv.
-2021-03-01 15:21:17 INFO File lengths validated.
-2021-03-01 15:21:17 INFO All phone numbers validated.
-2021-03-01 15:21:17 INFO All states validated.
-2021-03-01 15:21:17 INFO All emails validated.
-2021-03-01 15:21:17 INFO Starting data summary.
-2021-03-01 15:21:17 INFO Transposed Data:
+2021-03-01 18:09:55 INFO Successfully loaded NYL_FieldAgent_20210219.csv.
+2021-03-01 18:09:55 INFO Successfully loaded NYL_FieldAgent_20210212.csv.
+2021-03-01 18:09:55 INFO File lengths validated.
+2021-03-01 18:09:55 INFO All phone numbers validated.
+2021-03-01 18:09:55 WARNING Agent 170523 has an invalid state.
+2021-03-01 18:09:55 WARNING Agent 193864 has an invalid state.
+2021-03-01 18:09:55 WARNING Agent 209340 has an invalid state.
+2021-03-01 18:09:55 INFO All emails validated.
+2021-03-01 18:09:55 INFO Starting data summary.
+2021-03-01 18:09:55 INFO Transposed Data:
 
                                                              0     ...                                     2105
 Partner                                                       NYL  ...                                      NYL
@@ -40,7 +41,7 @@ AARP Auth to Offer Level                                        2  ...          
 
 [28 rows x 2106 columns]
 
-2021-03-01 15:21:17 INFO Number of Unique Values by Column:
+2021-03-01 18:09:55 INFO Number of Unique Values by Column:
 
 Partner                                 1
 Agent Id                             2106
@@ -72,7 +73,7 @@ Title                                   1
 AARP Auth to Offer Level                1
 dtype: int64
 
-2021-03-01 15:21:18 INFO Data grouped by state:
+2021-03-01 18:09:56 INFO Data grouped by state:
 
       Agent Id Agency State
 952     153804           AK
@@ -89,7 +90,7 @@ dtype: int64
 
 [2106 rows x 2 columns]
 
-2021-03-01 15:21:18 INFO Agent Start and A2O Date Info:
+2021-03-01 18:09:56 INFO Agent Start and A2O Date Info:
 
                         0 Agent Writing Contract Start Date Date when an agent became A2O
 0            Steve Morgan                        06/10/1998                    12/02/2020
@@ -106,5 +107,5 @@ dtype: int64
 
 [2106 rows x 3 columns]
 
-2021-03-01 15:21:18 INFO Data summary complete.
-2021-03-01 15:21:18 INFO Program executed successfully.
+2021-03-01 18:09:56 INFO Data summary complete.
+2021-03-01 18:09:56 INFO Program executed successfully.
