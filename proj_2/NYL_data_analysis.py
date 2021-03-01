@@ -1,11 +1,11 @@
-import os
-import re
-import imghdr
-import smtplib
+import os  # obtain list of files in directory
+import re  # email validation
+import imghdr  # image attachment
+import smtplib  # sending emails
 import logging
 import numpy as np
 import pandas as pd
-import phonenumbers as pn
+import phonenumbers as pn  # phone number validation
 import matplotlib.pyplot as plt
 from email.message import EmailMessage
 
@@ -13,11 +13,14 @@ from email.message import EmailMessage
 # Given a list of filenames, returns file with most recent date
 # Assumed all files in list are same format
 def find_recent_file(fns):
-    if type(fns) == np.ndarray:
-        if len(fns[0]) > 4:
-            remove_ext = lambda f: f.split('_')[-1][:-4]
-            ind = np.array(list(map(remove_ext, fns)))
-            rf = fns[ind.argmax()]
+    # extracts last part of file name minus extension
+    remove_ext = np.vectorize(lambda f: f.split('_')[-1][:-4])
+
+    if type(fns) == np.ndarray:  # must be a list of files
+        if len(fns[0]) > 4:  # cannot be just an extension
+            dates = remove_ext(fns)
+            rf_index = dates.argmax()  # index of recent file
+            rf = fns[rf_index]
             return rf
     logging.error('One or more files is in the wrong format.')
     return False
@@ -27,20 +30,20 @@ def find_recent_file(fns):
 # Stops process if logged, logs and continues otherwise
 def log_process(f):
     try:
-        file_list = open('output/NYL.lst', 'x')
+        file_list = open('output/NYL.lst', 'x')  # tries to create lst file, throws error if it already exists
         file_list.write(f + '\n')
         file_list.close()
         logging.info('Created NYL.lst and logged {} as processed.'.format(f))
         return True
     except FileExistsError:
-        file_list = open('output/NYL.lst', 'r')
-        if f in file_list.read().split('\n'):
+        file_list = open('output/NYL.lst', 'r')  # opens as read only
+        if f in file_list.read().split('\n'):  # checks if given file name is in lst file
             file_list.close()
             logging.warning('File already processed.')
             return False
         else:
             file_list.close()
-            file_list = open('output/NYL.lst', 'a')
+            file_list = open('output/NYL.lst', 'a')  # opens as append to add current file
             file_list.write(f + '\n')
             file_list.close()
             logging.info('Logged {} as processed.'.format(f))
@@ -73,8 +76,9 @@ def validate_file_len(d, prevd):
 def replace_headers(d):
     c1 = 'Agent Writing Contract Start Date (Carrier appointment start date)'
     c3 = "Agent Writing Contract Status (actually active and cancelled's should come in two different files)"
-    if c1 in d.columns or c3 in d.columns:
+    if c1 in d.columns:
         d = d.rename(columns={c1: 'Agent Writing Contract Start Date'})
+    if c3 in d.columns:
         d = d.rename(columns={c3: 'Agent Writing Contract Status'})
     return d
 
@@ -82,9 +86,8 @@ def replace_headers(d):
 # Removes unnecessary whitespace from given dataframe
 def format_data(d):
     try:
-        for i, col in d.items():
-            if col.dtype == object:
-                d[i] = col.str.strip().replace({' +': ' '}, regex=True)
+        # removes leading and trailing whitespace, as well as multiple spaces in middle of object columns
+        d = d.apply(lambda col: col.str.strip().replace({' +': ' '}, regex=True) if col.dtype == object else col)
     except Exception as ex:
         logging.error('Failed formatting data. {}'.format(ex))
     finally:
@@ -93,7 +96,7 @@ def format_data(d):
 
 # Returns true if given US phone number is valid, else false
 def is_invalid_pn(num):
-    num = '+1' + num
+    num = '+1' + num  # assumes all phone numbers are from the USA
     try:
         num = pn.parse(num)
     except pn.NumberParseException:
@@ -107,8 +110,10 @@ def is_invalid_pn(num):
 
 # Validates all phone numbers in given dataframe, logs invalid phone numbers
 def find_valid_pn(d):
-    invalid_nums = pd.Series(map(is_invalid_pn, d['Agency Phone Number']))
-    if invalid_nums.sum() > 0:
+    # boolean mask which is true wherever there is an invalid phone number
+    invalid_nums = d['Agency Phone Number'].apply(is_invalid_pn)
+
+    if invalid_nums.sum() > 0:  # if there are any invalid phone numbers, log that agent's id
         for agent_id in d[invalid_nums]['Agent Id']:
             logging.warning('Agent {} has an invalid phone number.'.format(agent_id))
         return False
@@ -124,11 +129,14 @@ def find_valid_state(d):
                    'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ',
                    'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
                    'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY']
-    is_invalid_st = lambda s: False if s in states_abbr else True
-    invalid_agency_states = pd.Series(map(is_invalid_st, d['Agency State']))
-    invalid_agent_states = pd.Series(map(is_invalid_st, d['Agent State']))
+
+    # boolean masks which are true wherever there is an invalid state
+    invalid_agency_states = d['Agency State'].apply(lambda s: False if s in states_abbr else True)
+    invalid_agent_states = d['Agent State'].apply(lambda s: False if s in states_abbr else True)
+    # if either agency or agent states are invalid, there is an invalid state
     invalid_states = invalid_agent_states | invalid_agency_states
-    if invalid_states.sum() > 0:
+
+    if invalid_states.sum() > 0:  # if there are any invalid states, log that agent's id
         for agent_id in d[invalid_states]['Agent Id']:
             logging.warning('Agent {} has an invalid state.'.format(agent_id))
         return False
@@ -139,9 +147,12 @@ def find_valid_state(d):
 
 # Validates all agent's email addresses in given dataframe, logs invalid emails
 def find_valid_email(d):
+    # regex check for invalid email. returns true if invalid
     is_invalid_em = lambda em: True if not re.match(r'[\w\.-]+@[\w\.-]+(\.[\w]+)+', em) else False
-    invalid_emails = pd.Series(map(is_invalid_em, d['Agent Email Address']))
-    if invalid_emails.sum() > 0:
+    # boolean mask which is true for every invalid email
+    invalid_emails = d['Agent Email Address'].apply(is_invalid_em)
+
+    if invalid_emails.sum() > 0:  # if there are any invalid emails, log that agent's id
         for agent_id in d[invalid_emails]['Agent Id']:
             logging.warning('Agent {} has an invalid email.'.format(agent_id))
         return False
@@ -150,12 +161,46 @@ def find_valid_email(d):
         return True
 
 
+# Plots column data
+def column_data(d):
+    n_unique_cols = d.apply(lambda col: col.nunique())
+    logging.info('Number of Unique Values by Column:\n\n{}\n'.format(n_unique_cols))
+    # plot unique columns
+    fig, ax = plt.subplots()
+    ax.bar(n_unique_cols.index, n_unique_cols)
+    plt.setp(ax.get_xticklabels(), rotation=90, horizontalalignment='right')
+    plt.xlabel('Column')
+    plt.ylabel('Count')
+    plt.title('Number of Unique Values by Column')
+    fig.set_figheight(8)
+    fig.set_figwidth(8)
+    plt.tight_layout()
+    plt.savefig('output/graphs/Unique_cols.png')
+
+
+# Plots state data
+def state_data(d):
+    state_group = d.sort_values('Agency State')[['Agent Id', 'Agency State']]
+    logging.info('Data grouped by state:\n\n{}\n'.format(state_group))
+    # plot state counts
+    state_counts = state_group.groupby('Agency State')['Agent Id'].count().sort_values()
+    fig, ax = plt.subplots()
+    ax.bar(state_counts.index, state_counts)
+    plt.xlabel('State')
+    plt.ylabel('Count')
+    plt.title('Occurence of Agency States')
+    fig.set_figheight(5)
+    fig.set_figwidth(14)
+    plt.tight_layout()
+    plt.savefig('output/graphs/State_counts.png')
+
+
 # Combines and formats first, middle and last names from given dataframe
 def format_agent_names(d):
-    format_middle_names = lambda n: n if (n == '') else (n + ' ')
-    first_names = d['Agent First Name'].str.strip().str.title() + ' '
-    middle_names = pd.Series(map(format_middle_names, d['Agent Middle Name'].str.strip().str.title()))
-    last_names = d['Agent Last Name'].str.strip().str.title()
+    first_names = d['Agent First Name'].str.title() + ' '
+    middle_names = d['Agent Middle Name'].str.title().apply(lambda n: n if (n == '') else (n + ' '))
+    last_names = d['Agent Last Name'].str.title()
+
     return first_names + middle_names + last_names
 
 
@@ -173,7 +218,7 @@ def plot_agent_info(ai, c1, c2, n):
     ax2.plot(ai[0], ai[c1], '.b')
     ax2.tick_params(axis='y', labelcolor=color)
 
-    plt.xticks([])
+    plt.xticks([])  # there are 2000+ names -- don't plot them
     fig.tight_layout()
     plt.savefig('output/graphs/' + n + '.png')
 
@@ -183,16 +228,21 @@ def agent_info_data(d):
     names = format_agent_names(d)
     col1 = 'Agent Writing Contract Start Date'
     col2 = 'Date when an agent became A2O'
+
+    # aggregate necessary data
     agent_info = pd.concat([names, d[[col1, col2]]], axis=1)
     logging.info('Agent Start and A2O Date Info:\n\n{}\n'.format(agent_info))
 
+    # convert to datetime so they can be sorted
     agent_info[col1] = pd.to_datetime(agent_info[col1], 'coerce')
     agent_info[col2] = pd.to_datetime(agent_info[col2], 'coerce')
 
+    # plot with sorted by A20 date
     agent_info = agent_info.sort_values(col2)
     img_name = 'Agent_info_by_A2O'
     plot_agent_info(agent_info, col1, col2, img_name)
 
+    # plot with sorted by start date
     agent_info = agent_info.sort_values(col1)
     img_name = 'Agent_info_by_start'
     plot_agent_info(agent_info, col1, col2, img_name)
@@ -201,28 +251,18 @@ def agent_info_data(d):
 def data_summary(d):
     logging.info('Starting data summary.')
 
-    trans_d = d.T
-    logging.info('Transposed Data:\n\n{}\n'.format(trans_d))
+    logging.info('Transposed Data:\n\n{}\n'.format(d.T))
 
-    state_group = d.sort_values('Agency State')
-    logging.info('Data grouped by state:\n\n{}\n'.format(state_group))
-
-    state_counts = state_group.groupby('Agency State')['Agent Id'].count().sort_values()
-    plt.plot(state_counts.index, state_counts, '.r')
-    plt.xticks(np.arange(0, 50, 3))
-    plt.xlabel('State')
-    plt.ylabel('Count')
-    plt.title('Occurence of Agency States')
-    plt.savefig('output/graphs/State_counts.png')
-
+    column_data(d)
+    state_data(d)
     agent_info_data(d)
 
     logging.info('Data summary complete.')
 
 
 # sends email of log file, attaches images if cond is true, exits program when complete
-def send_email(cond):
-    if cond:
+def send_email(success):
+    if success:
         logging.info('Program executed successfully.')
     else:
         logging.info('Program failed execution.')
@@ -239,8 +279,8 @@ def send_email(cond):
     with open('output/NYLData.log') as fp:
         msg.set_content(fp.read())
 
-    if cond:
-        imgs = ['Agent_info_by_A2O.png', 'Agent_info_by_start.png', 'State_counts.png']
+    if success:
+        imgs = os.listdir('output/graphs/')
         for img_name in imgs:
             with open('output/graphs/' + img_name, 'rb') as fp:
                 img = fp.read()
@@ -249,37 +289,48 @@ def send_email(cond):
     s = smtplib.SMTP(smtp_server)
     s.starttls()
     s.login(username, password)
-    # s.send_message(msg)
+    s.send_message(msg)
     s.quit()
 
-    if cond:
-        exit(0)
-    else:
-        exit(-1)
+    exit(0) if success else exit(-1)
+
+
+# Function to send email if process failed
+def escape(b):
+    if type(b) == bool:
+        if not b:
+            send_email(False)
+    return b
 
 
 if __name__ == "__main__":
-    escape = lambda b: (send_email(False) if not b else b) if type(b) == bool else b
+    pd.set_option('display.expand_frame_repr', False)
+    pd.set_option('display.max_columns', 3)
+    # Logging setup
     logging.basicConfig(format='%(asctime)s %(levelname)-4s %(message)s',
                         filename='output/NYLData.log',
                         filemode='w',
                         level=logging.DEBUG,
                         datefmt='%Y-%m-%d %H:%M:%S')
+    # Remove matplotlib logging
     mpl_logger = logging.getLogger('matplotlib')
     mpl_logger.setLevel(logging.WARNING)
+
+    # Get list of files in data folder
     file_names = np.array(os.listdir('data/'))
 
     recent_file = escape(find_recent_file(file_names))
-    # escape(log_process(recent_file))
+    escape(log_process(recent_file))
 
     data = escape(load_data(recent_file))
 
+    # Gets list of files without most recent file
     prev_file_names = np.delete(file_names, np.where(file_names == recent_file))
-    prev_data = escape(load_data(find_recent_file(prev_file_names)))
+    prev_file = escape(find_recent_file(prev_file_names))
+    prev_data = escape(load_data(prev_file))
 
     escape(validate_file_len(data, prev_data))
-    data = replace_headers(data)
-    data = format_data(data)
+    data = format_data(replace_headers(data))
 
     find_valid_pn(data)
     find_valid_state(data)
@@ -287,4 +338,3 @@ if __name__ == "__main__":
 
     data_summary(data)
     send_email(True)
-

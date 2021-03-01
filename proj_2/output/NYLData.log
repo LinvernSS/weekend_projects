@@ -1,11 +1,12 @@
-2021-02-27 22:01:14 INFO Successfully loaded NYL_FieldAgent_20210219.csv.
-2021-02-27 22:01:14 INFO Successfully loaded NYL_FieldAgent_20210212.csv.
-2021-02-27 22:01:14 INFO File lengths validated.
-2021-02-27 22:01:14 INFO All phone numbers validated.
-2021-02-27 22:01:14 INFO All states validated.
-2021-02-27 22:01:14 INFO All emails validated.
-2021-02-27 22:01:14 INFO Starting data summary.
-2021-02-27 22:01:14 INFO Transposed Data:
+2021-03-01 15:21:17 INFO Created NYL.lst and logged NYL_FieldAgent_20210219.csv as processed.
+2021-03-01 15:21:17 INFO Successfully loaded NYL_FieldAgent_20210219.csv.
+2021-03-01 15:21:17 INFO Successfully loaded NYL_FieldAgent_20210212.csv.
+2021-03-01 15:21:17 INFO File lengths validated.
+2021-03-01 15:21:17 INFO All phone numbers validated.
+2021-03-01 15:21:17 INFO All states validated.
+2021-03-01 15:21:17 INFO All emails validated.
+2021-03-01 15:21:17 INFO Starting data summary.
+2021-03-01 15:21:17 INFO Transposed Data:
 
                                                              0     ...                                     2105
 Partner                                                       NYL  ...                                      NYL
@@ -39,39 +40,71 @@ AARP Auth to Offer Level                                        2  ...          
 
 [28 rows x 2106 columns]
 
-2021-02-27 22:01:14 INFO Data grouped by state:
+2021-03-01 15:21:17 INFO Number of Unique Values by Column:
 
-     Partner  Agent Id  ...  Title AARP Auth to Offer Level
-952      NYL    153804  ...  AGENT                        2
-708      NYL    129380  ...  AGENT                        2
-734      NYL    132079  ...  AGENT                        2
-269      NYL     72396  ...  AGENT                        2
-1137     NYL    166621  ...  AGENT                        2
-...      ...       ...  ...    ...                      ...
-998      NYL    157183  ...  AGENT                        2
-2053     NYL    750499  ...  AGENT                        2
-2        NYL      1257  ...  AGENT                        2
-65       NYL     28017  ...  AGENT                        2
-1678     NYL    193739  ...  AGENT                        2
+Partner                                 1
+Agent Id                             2106
+Update Date                             1
+Agency Name                           174
+Agency Phone Number                   116
+Agency Street Address                 116
+Agency Street Address 2                69
+Agency City                           114
+Agency State                           47
+Agency Postal Code                    116
+Agency Principal Name                   1
+Agent Last Name                      1742
+Agent Middle Name                     299
+Agent First Name                     1037
+Agent Street Address                  963
+Agent Street Address 2                388
+Agent City                            645
+Agent State                            50
+Agent Postal Code                     890
+Agent Phone Number                   1770
+Agent Email Address                  2106
+Agent National Producer Number       2105
+Agent Writing Contract Start Date    1585
+Agent Writing Contract Status           1
+Agent License State (active)         1866
+Date when an agent became A2O         279
+Title                                   1
+AARP Auth to Offer Level                1
+dtype: int64
 
-[2106 rows x 28 columns]
+2021-03-01 15:21:18 INFO Data grouped by state:
 
-2021-02-27 22:01:15 INFO Agent Start and A2O Date Info:
+      Agent Id Agency State
+952     153804           AK
+708     129380           AK
+734     132079           AK
+269      72396           AK
+1137    166621           AK
+...        ...          ...
+998     157183           WY
+2053    750499           WY
+2         1257           WY
+65       28017           WY
+1678    193739           WY
 
-                        0  ... Date when an agent became A2O
-0            Steve Morgan  ...                    12/02/2020
-1         Anthony Benitez  ...                    10/07/2020
-2         Dan Christensen  ...                    12/29/2020
-3            James Kramer  ...                    10/02/2020
-4     Phillip R Whitehead  ...                    12/02/2020
-...                   ...  ...                           ...
-2101         Jay P Miller  ...                    10/15/2020
-2102        Otto A Kuehne  ...                    12/02/2020
-2103       Charles W Boso  ...                    01/22/2021
-2104         Len A Fuller  ...                    01/04/2021
-2105       Jeffrey E Thol  ...                    10/05/2020
+[2106 rows x 2 columns]
+
+2021-03-01 15:21:18 INFO Agent Start and A2O Date Info:
+
+                        0 Agent Writing Contract Start Date Date when an agent became A2O
+0            Steve Morgan                        06/10/1998                    12/02/2020
+1         Anthony Benitez                        06/02/1998                    10/07/2020
+2         Dan Christensen                        09/14/1998                    12/29/2020
+3            James Kramer                        07/14/1998                    10/02/2020
+4     Phillip R Whitehead                        06/04/1994                    12/02/2020
+...                   ...                               ...                           ...
+2101         Jay P Miller                        03/16/1970                    10/15/2020
+2102        Otto A Kuehne                        04/01/1970                    12/02/2020
+2103       Charles W Boso                        04/20/1970                    01/22/2021
+2104         Len A Fuller                        12/08/1976                    01/04/2021
+2105       Jeffrey E Thol                        05/04/1970                    10/05/2020
 
 [2106 rows x 3 columns]
 
-2021-02-27 22:01:15 INFO Data summary complete.
-2021-02-27 22:01:15 INFO Program executed successfully.
+2021-03-01 15:21:18 INFO Data summary complete.
+2021-03-01 15:21:18 INFO Program executed successfully.
