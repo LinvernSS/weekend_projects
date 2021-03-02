@@ -44,7 +44,7 @@ class MyTestCase(unittest.TestCase):
         self.assertEqual(nda.find_valid_pn(d2), False)
 
     def test_states(self):
-        self.assertEqual(nda.find_valid_state(d1), False)
+        self.assertEqual(nda.find_valid_state(d1), True)
         self.assertEqual(nda.find_valid_state(d2), False)
 
     def test_email(self):

@@ -119,8 +119,8 @@ def is_invalid_pn(num):
 
 # Validates all phone numbers in given dataframe, logs invalid phone numbers
 def find_valid_pn(d):
-    invalid_agency_nums = d['Agency Phone Number'].apply(is_invalid_pn)
-    invalid_agent_nums = d['Agent Phone Number'].apply(is_invalid_pn)
+    invalid_agency_nums = d['Agency Phone Number'].fillna('').apply(is_invalid_pn)
+    invalid_agent_nums = d['Agent Phone Number'].fillna('').apply(is_invalid_pn)
     # boolean mask which is true wherever there is an invalid phone number
     invalid_nums = invalid_agency_nums | invalid_agent_nums
 
@@ -135,6 +135,9 @@ def find_valid_pn(d):
 
 # Finds if there are invalid states in list
 def invalid_list_states(s):
+    # ignore empty states
+    if s == '':
+        return False
     for st in s[:-1].split(','):
         if st not in states_abbr:
             return True
@@ -144,8 +147,8 @@ def invalid_list_states(s):
 # Validates all agency states in given dataframe, logs invalid states
 def find_valid_state(d):
     # boolean masks which are true wherever there is an invalid state
-    invalid_agency_states = d['Agency State'].apply(lambda s: False if s in states_abbr else True)
-    invalid_agent_states = d['Agent State'].apply(lambda s: False if s in states_abbr else True)
+    invalid_agency_states = d['Agency State'].fillna('').apply(lambda s: False if s in states_abbr else True)
+    invalid_agent_states = d['Agent State'].fillna('').apply(lambda s: False if s in states_abbr else True)
     invalid_license_states = d['Agent License State (active)'].fillna('').apply(invalid_list_states)
 
     # if any are invalid, there is an invalid state
@@ -165,7 +168,7 @@ def find_valid_email(d):
     # regex check for invalid email. returns true if invalid
     is_invalid_em = lambda em: True if not re.match(r'[\w\.-]+@[\w\.-]+(\.[\w]+)+', em) else False
     # boolean mask which is true for every invalid email
-    invalid_emails = d['Agent Email Address'].apply(is_invalid_em)
+    invalid_emails = d['Agent Email Address'].fillna('').apply(is_invalid_em)
 
     if invalid_emails.sum() > 0:  # if there are any invalid emails, log that agent's id
         for agent_id in d[invalid_emails]['Agent Id']:
@@ -304,7 +307,7 @@ def send_email(success):
     s = smtplib.SMTP(smtp_server)
     s.starttls()
     s.login(username, password)
-    # s.send_message(msg)
+    s.send_message(msg)
     s.quit()
 
     exit(0) if success else exit(-1)
@@ -335,7 +338,7 @@ if __name__ == "__main__":
     file_names = np.array(os.listdir('data/'))
 
     recent_file = escape(find_recent_file(file_names))
-    # escape(log_process(recent_file))
+    escape(log_process(recent_file))
 
     data = escape(load_data(recent_file))
 
